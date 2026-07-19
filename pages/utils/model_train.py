@@ -67,6 +67,25 @@ def evaluate_model(original_price, differencing_order):
 
     return round(rmse, 2)
 
+
+def evaluate_model_metrics(original_price, differencing_order):
+    """Same holdout split as evaluate_model, but returns the full
+    metrics dict (RMSE, MAE, MAPE, R2, directional accuracy) from
+    pages.utils.metrics, for the model comparison page."""
+    train_data, test_data = original_price[:-30], original_price[-30:]
+    return evaluate_window(train_data, test_data)
+
+
+def evaluate_window(train_data, test_data):
+    """Fit on `train_data`, forecast len(test_data) days ahead, score
+    against `test_data`. Used both for the single last-30-day holdout
+    and for walk-forward validation across multiple windows."""
+    from pages.utils.metrics import compute_metrics
+
+    d = get_differencing_order(train_data)
+    predictions = fit_model(train_data, d)
+    return compute_metrics(np.asarray(test_data).flatten(), np.asarray(predictions).flatten())
+
 def scaling(close_price):
 
     scaler = StandardScaler()

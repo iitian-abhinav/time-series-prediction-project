@@ -6,3 +6,7 @@ scikit-learn
 statsmodels
 plotly
 pandas-ta-classic
+xgboost
+lightgbm
+arch
+tensorflow
